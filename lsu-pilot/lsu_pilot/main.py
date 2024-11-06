@@ -139,6 +139,21 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(
             chat_id=update.effective_chat.id, text=initial_response_message.content
         )
+        
+async def transcribe_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+  # Make sure we have a voice file to transcribe
+  voice_id = update.message.voice.file_id
+  if voice_id:
+        file = await context.bot.get_file(voice_id)
+        await file.download_to_drive(f"voice_note_{voice_id}.ogg")
+        await update.message.reply_text("Voice note downloaded, transcribing now")
+        audio_file = open(f"voice_note_{voice_id}.ogg", "rb")
+        transcript = openai.audio.transcriptions.create(
+            model="whisper-1", file=audio_file
+        )
+        await update.message.reply_text(
+            f"Transcript finished:\n {transcript.text}"
+        )
 
 async def mozilla(update: Update, context: ContextTypes.DEFAULT_TYPE):
   answer = answer_question(df, question=update.message.text, debug=True)
@@ -166,10 +181,12 @@ if __name__ == '__main__':
   chat_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), chat)
   mozilla_handler = CommandHandler('mozilla', mozilla)
   image_handler = CommandHandler('image', image)
+  voice_handler = MessageHandler(filters.VOICE, transcribe_message)
   
   application.add_handler(start_handler)
   application.add_handler(chat_handler)
   application.add_handler(mozilla_handler)
   application.add_handler(image_handler)
+  application.add_handler(voice_handler)
 
   application.run_polling()
