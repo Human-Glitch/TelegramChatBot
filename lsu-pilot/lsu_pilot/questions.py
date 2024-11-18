@@ -36,7 +36,7 @@ def create_context(question, df, max_len=1800):
   """
   # Get the embeddings for the question
   q_embeddings = openai.embeddings.create(
-      input=question, model='text-embedding-ada-002').data[0].embedding
+      input=question, model='text-embedding-3-small').data[0].embedding
 
   # Get the distances from the embeddings
   df['distances'] = distances_from_embeddings(q_embeddings,
@@ -62,7 +62,7 @@ def create_context(question, df, max_len=1800):
   return "\n\n###\n\n".join(returns)
 
 def answer_question(df,
-                    model="gpt-4o-mini",
+                    model="ft:gpt-4o-mini-2024-07-18:personal:trnfewshot20230907:AU6eCiVU",#"gpt-4o-mini-2024-07-18",
                     question="What is the meaning of life?",
                     max_len=1800,
                     debug=False,
@@ -89,7 +89,7 @@ def answer_question(df,
             "role":
             "user",
             "content":
-            f"Answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know.\" Try to site sources to the links in the context when possible.\n\nContext: {context}\n\n---\n\nQuestion: {question}\nSource:\nAnswer:",
+            f"First fix all grammar, casing, or mispellings issues in the question, remove \"\mozilla\", and be sure to capitalize acronyms. Then answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know.\" Try to site sources to the links in the context when possible. Provide the model you are using and the reason why you answered the way you did. \n\nModel: {model} \n\nContext: {context}\n\n---\n\nQuestion: {question}\nSource:\nAnswer:",
         }],
         temperature=0,
         max_tokens=max_tokens,

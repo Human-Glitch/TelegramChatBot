@@ -88,11 +88,14 @@ for row in df.iterrows():
     shortened.append(row[1]['text'])
 
 df = pd.DataFrame(shortened, columns=['text'])
+
 df['n_tokens'] = df.text.apply(lambda x: len(tokenizer.encode(x)))
 
 print("start")
 df['embeddings'] = df.text.apply(lambda x: openai.embeddings.create(
-    input=x, model='text-embedding-ada-002').data[0].embedding)
+    input=x, model='text-embedding-3-small').data[0].embedding)
 print("finish")
+
+df.to_json("embeddings.jsonl", orient='records', lines=True)
 
 df.to_csv('processed/embeddings.csv')

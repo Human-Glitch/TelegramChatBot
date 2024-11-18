@@ -1,9 +1,0 @@
-# Contributors by commit history
-https://github.com/mdn/content/commits/main/files/en-us/glossary/bigint/index.md
-
-# Original Wiki contributors
-chrisdavidmills
-fscholz
-rwe2020
-milsyobtaf
-iulia
