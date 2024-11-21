@@ -8,6 +8,10 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
+from dotenv import load_dotenv
+load_dotenv()
+
+import replicate
 from openai import OpenAI
 import pandas as pd
 import numpy as np
@@ -61,84 +65,46 @@ csv_path = os.path.join(current_dir, "processed", "embeddings.csv")
 df = pd.read_csv(csv_path, index_col=0)
 df["embeddings"] = df["embeddings"].apply(eval).apply(np.array)
 
-messages = [{
-  "role": "system",
-  "content": "You are a helpful assistant that answers questions."
-}, {
-  "role": "system",
-  "content": CODE_PROMPT
-}]
+message_history = []
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
 
+def generate_prompt(messages):
+  return "\n".join(f"[INST] {message['text']} [/INST]"
+                   if message['isUser'] else message['text']
+                   for message in messages)
+  
 async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    messages.append({"role": "user", "content": update.message.text})
-    
-    initial_response = openai.chat.completions.create(
-        model="gpt-4o-mini", messages=messages, tools=functions
-    )
-    
-    initial_response_message = initial_response.choices[0].message
-    messages.append(initial_response_message)
-    
-    final_response = None
-    tool_calls = initial_response_message.tool_calls
-    
-    if tool_calls:
-        for tool_call in tool_calls:
-            name = tool_call.function.name
-            args = json.loads(tool_call.function.arguments)
-            response = run_function(name, args)
-            
-            print(tool_calls)
-            
-            if name == "svg_to_png_bytes":
-                await context.bot.send_photo(
-                    chat_id=update.effective_chat.id, photo=response
-                )
-                messages.append(
-                    {
-                        "tool_call_id": tool_call.id,
-                        "role": "tool",
-                        "name": name,
-                        "content": str(response) + "Image was sent to the user, do not send the base64 string to them. Only send back 'here is the svg rendered as requested'",
-                    }
-                )
-            else:
-                messages.append(
-                    {
-                        "tool_call_id": tool_call.id,
-                        "role": "tool",
-                        "name": name,
-                        "content": str(response),
-                    }
-                )
-            # Generate the final response
-            final_response = openai.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=messages,
-            )
-            final_answer = final_response.choices[0].message
+    message_history.append({"isUser": True, "text": update.message.text})
 
-            # Send the final response if it exists
-            if final_answer:
-                messages.append(final_answer)
-                await context.bot.send_message(
-                    chat_id=update.effective_chat.id, text=final_answer.content
-                )
-            else:
-                # Send an error message if something went wrong
-                await context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text="something wrong happened, please try again",
-                )
-    # no functions were execute
-    else:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id, text=initial_response_message.content
-        )
+    prompt = generate_prompt(message_history)
+
+    input = {
+        "top_p": 1,
+        "prompt": prompt,
+        "temperature": 0.5,
+        "max_new_tokens": 500,
+        "min_new_tokens": -1
+    }
+    
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Let me think...")
+
+    human_readable_output = ""
+
+    for event in replicate.stream(
+        "meta/llama-2-70b-chat",
+        input=input
+    ): human_readable_output += event.data
+    
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=human_readable_output[:-2])
+  
+    message_history.append({"isUser": False, "text": human_readable_output})
         
 async def transcribe_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
   # Make sure we have a voice file to transcribe
