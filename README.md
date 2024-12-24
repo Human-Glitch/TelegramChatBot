@@ -16,6 +16,36 @@ Uses the following in the backend:
 
 ---
 
+## Demo
+Ask questions and get intelligent responses.
+
+
+<img width="1063" alt="image" src="https://github.com/user-attachments/assets/125c0cf1-8959-4738-9dd2-5295a7b53826" />
+
+---
+Use function calling to ask chat to render SVG images to the screen.
+
+<img width="1065" alt="image" src="https://github.com/user-attachments/assets/4ebcf919-0ccc-4660-b1bd-3370eff2190a" />
+
+---
+
+Ask chat for fine-tuned responses from Mozilla documentation.
+
+<img width="1046" alt="image" src="https://github.com/user-attachments/assets/06bc99ae-05cd-4eb3-8939-f2452eccec70" />
+
+---
+Ask chat to generate python code and execute it.
+
+<img width="1059" alt="image" src="https://github.com/user-attachments/assets/334ca52c-ba27-45ab-b194-003d01d68cd1" />
+
+---
+
+Ask chat to generate images via text or voice commands.
+
+<img width="1055" alt="image" src="https://github.com/user-attachments/assets/18126005-0ecc-45b0-b6aa-ec10c2603363" />
+
+---
+
 ## Prerequisites
 
 - **Python 3.8 or higher**: Ensure Python is installed on your system.  
@@ -68,28 +98,6 @@ Uses the following in the backend:
 - Just start by typing or using voice. A
 - Use `/mozilla` command for fine-tuned respones from Mozilla docs.
 - **/help**: Provides a list of available commands and their descriptions.
-
-## Demo
-
-<img width="1063" alt="image" src="https://github.com/user-attachments/assets/125c0cf1-8959-4738-9dd2-5295a7b53826" />
-
----
-
-<img width="1065" alt="image" src="https://github.com/user-attachments/assets/4ebcf919-0ccc-4660-b1bd-3370eff2190a" />
-
----
-
-<img width="1046" alt="image" src="https://github.com/user-attachments/assets/06bc99ae-05cd-4eb3-8939-f2452eccec70" />
-
----
-
-<img width="1059" alt="image" src="https://github.com/user-attachments/assets/334ca52c-ba27-45ab-b194-003d01d68cd1" />
-
----
-
-<img width="1055" alt="image" src="https://github.com/user-attachments/assets/18126005-0ecc-45b0-b6aa-ec10c2603363" />
-
-
 
 ## License
 
