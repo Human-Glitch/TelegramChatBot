@@ -109,3 +109,4 @@ This project is licensed under the [Apache License 2.0](LICENSE).
 
 - [telebot](https://github.com/eternnoir/pyTelegramBotAPI): For providing the Telegram API wrapper.  
 - [OpenAI, Whisper, DALL-E](https://platform.openai.com/): For the AI language model integration.
+- Instructors: Noah Hein, Swyx for course `Level Up From Software Engineer to AI Engineer`
