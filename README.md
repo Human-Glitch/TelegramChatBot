@@ -95,7 +95,7 @@ Ask chat to generate images via text or voice commands.
 ---
 
 ## Commands
-- Just start by typing or using voice. A
+- Just start by typing or using voice.
 - Use `/mozilla` command for fine-tuned respones from Mozilla docs.
 - **/help**: Provides a list of available commands and their descriptions.
 
